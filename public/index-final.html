@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StyleSync - AI Personal Stylist Powered by THE LOOK">
+    <title>StyleSync - THE LOOK Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes progress { from { width: 0; } to { width: 78%; } }
+        @keyframes progressFull { from { width: 0; } to { width: 100%; } }
+        @keyframes slideDown { from { top: 0; } to { top: 100%; } }
+
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-spin { animation: spin 1s linear infinite; }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .progress-bar { animation: progress 2s ease-in-out forwards; }
+        .progress-bar-full { animation: progressFull 3s ease-in-out forwards; }
+        .scan-line { animation: slideDown 2s linear infinite; }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        * { -webkit-tap-highlight-color: transparent; }
+        button:active { transform: scale(0.98); }
+        
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 4px; background: #ccc; outline: none; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 20px; height: 20px;
+            border-radius: 50%; background: #3b82f6;
+            cursor: pointer; box-shadow: 0 2px 8px rgba(59, 130, 236, 0.4);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px; height: 20px;
+            border-radius: 50%; background: #3b82f6;
+            cursor: pointer; border: none; box-shadow: 0 2px 8px rgba(59, 130, 236, 0.4);
+        }
+        input[type="range"]::-moz-range-track { background: transparent; border: none; }
+
+        .image-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .image-container img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body class="bg-black text-white font-sans overflow-x-hidden">
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [SCREEN 1: HOME]
+         이미지 부품: 01_hair_hero.png
+         역할: 메인 헤어 추천 카드 배경
+         시점: 앱을 켰을 때 가장 먼저 보이는 화보
+         ════════════════════════════════════════════════════════════════ -->
+    <div id="screen-home" class="screen active">
+        <header class="sticky top-0 z-50 p-6 bg-black/90 backdrop-blur border-b border-gray-800 flex justify-between items-center">
+            <div class="space-y-1">
+                <h1 class="text-2xl font-serif italic font-bold">StyleSync.</h1>
+                <p class="text-[10px] font-bold text-gray-500 uppercase">Winter • 10:20 AM • 12°C</p>
+            </div>
+        </header>
+        
+        <main class="pb-40">
+            <div class="p-8">
+                <h2 class="text-xl font-bold italic mb-4">Recommended Hair</h2>
+                <!-- [01_hair_hero.png] 메인 헤어 카드 -->
+                <div class="relative aspect-[4/5] bg-gray-900 rounded-[3.5rem] border border-gray-800 overflow-hidden shadow-xl">
+                    <div class="image-container">
+                        <img src="./assets/01_hair_hero.png" alt="Winter Soft Layers Hair Style" />
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/60"></div>
+                    <div class="absolute bottom-8 left-8">
+                        <div class="inline-block bg-purple-600 px-4 py-1 rounded text-[10px] font-bold mb-3">NEW SEASON</div>
+                        <h3 class="text-3xl font-bold italic">Winter Soft<br/>Layers</h3>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="fixed bottom-0 inset-x-0 p-8 bg-gradient-to-t from-black to-transparent z-[100]">
+            <button onclick="switchScreen('screen-profile')" class="w-full py-7 bg-blue-600 text-white rounded-full font-bold text-xs tracking-[0.4em] uppercase">
+                🎨 START STYLING
+            </button>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [SCREEN 2: PROFILE]
+         이미지 부품: 02_profile_base.png
+         역할: 프로필 입력 화면의 은은한 배경
+         시점: 키/몸무게를 입력할 때의 배경
+         ════════════════════════════════════════════════════════════════ -->
+    <div id="screen-profile" class="screen">
+        <div class="min-h-screen relative overflow-hidden">
+            <!-- [02_profile_base.png] 프로필 배경 -->
+            <div class="absolute inset-0 image-container opacity-30">
+                <img src="./assets/02_profile_base.png" alt="Profile background" />
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-blue-900/30"></div>
+            
+            <div class="relative z-10 p-8 min-h-screen flex flex-col pb-40">
+                <button onclick="switchScreen('screen-home')" class="text-2xl mb-6 w-8 h-8 flex items-center justify-center">←</button>
+                
+                <header class="space-y-4 my-8">
+                    <h2 class="text-4xl font-bold">Perfecting your fit</h2>
+                    <p class="text-gray-400 text-sm">StyleSync uses your measurements to suggest the most flattering silhouettes.</p>
+                </header>
+                
+                <div class="space-y-16 flex-1">
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span class="text-xs font-bold text-gray-500 uppercase">HEIGHT</span>
+                            <span class="text-3xl font-bold"><span id="height-value">175</span> cm</span>
+                        </div>
+                        <input type="range" min="140" max="210" value="175" id="height-slider" class="w-full h-2 bg-gray-800 rounded-full accent-blue-500">
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span class="text-xs font-bold text-gray-500 uppercase">WEIGHT</span>
+                            <span class="text-3xl font-bold"><span id="weight-value">68</span> kg</span>
+                        </div>
+                        <input type="range" min="40" max="130" value="68" id="weight-slider" class="w-full h-2 bg-gray-800 rounded-full accent-blue-500">
+                    </div>
+                </div>
+
+                <button onclick="switchScreen('screen-scan')" class="w-full py-5 bg-blue-600 text-white rounded-full font-bold uppercase shadow-lg">
+                    Continue →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [SCREEN 3: SCAN]
+         이미지 부품: 03_face_scan.png
+         역할: 스캔 화면 가상 카메라 영상
+         시점: AI가 내 얼굴을 분석하고 있을 때의 이미지
+         ════════════════════════════════════════════════════════════════ -->
+    <div id="screen-scan" class="screen fixed inset-0 bg-black z-[110] p-8 flex flex-col justify-between overflow-hidden">
+        <div class="absolute inset-0 bg-black"></div>
+        <div class="absolute inset-0 opacity-30" style="background: radial-gradient(circle at center, rgba(37,99,235,0.1) 0%, transparent 70%)"></div>
+        
+        <div class="relative z-10 space-y-4">
+            <div class="flex justify-between items-center">
+                <p class="text-[10px] text-blue-400 font-bold uppercase">SYS_AUTH_INIT...</p>
+                <button onclick="switchScreen('screen-home')" class="text-2xl">✕</button>
+            </div>
+            <h3 class="text-xl font-bold uppercase">Analyzing Facial Map...</h3>
+            <div class="h-0.5 w-full bg-gray-800 rounded-full overflow-hidden">
+                <div class="h-full bg-blue-500 progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- [03_face_scan.png] 얼굴 스캔 이미지 -->
+        <div class="relative z-10 flex-1 flex items-center justify-center">
+            <div class="w-72 h-96 border border-blue-500/30 rounded-full overflow-hidden relative flex items-center justify-center">
+                <div class="image-container">
+                    <img src="./assets/03_face_scan.png" alt="Face scan visualization" />
+                </div>
+                <div class="absolute inset-0 border-2 border-dashed border-blue-400 opacity-20"></div>
+                <div class="absolute w-full h-1 bg-gradient-to-r from-transparent via-blue-400 to-transparent scan-line"></div>
+            </div>
+        </div>
+
+        <div class="relative z-10">
+            <div class="flex justify-between text-[10px] text-gray-500 mb-2">
+                <span>MAPPING_NODES: 1024</span>
+                <span>78%</span>
+            </div>
+            <div class="h-1 bg-gray-900 rounded-full overflow-hidden mb-6">
+                <div class="h-full bg-blue-500 progress-bar"></div>
+            </div>
+        </div>
+
+        <button onclick="startScan()" class="relative z-10 py-5 bg-blue-600 text-white rounded-full font-bold uppercase shadow-[0_0_40px_rgba(59,130,236,0.6)] border border-blue-500">
+            INITIALIZE SCAN
+        </button>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [SCREEN 4: SOLUTION]
+         이미지 부품: 04_solution_base.png, 05_final_look.png
+         역할: 04 = 기본 아바타 (이너웨어), 05 = 최종 완성 아바타
+         시점: 스캔 직후 아이템 선택 후 완성
+         ════════════════════════════════════════════════════════════════ -->
+    <div id="screen-solution" class="screen bg-black min-h-screen pb-48">
+        <header class="p-8 text-center pt-12">
+            <button onclick="switchScreen('screen-scan')" class="text-2xl mb-6">←</button>
+            <h2 class="text-4xl font-bold mb-8">THE FOUNDATION</h2>
+        </header>
+
+        <!-- [04_solution_base.png] 기본 아바타 (초기 상태) / [05_final_look.png] 최종 완성 아바타 (선택 후) -->
+        <div class="px-8 mb-8">
+            <div id="final-look-image" class="aspect-[3/4] bg-gray-900 rounded-[2.5rem] border border-gray-800 overflow-hidden">
+                <div class="image-container">
+                    <img src="./assets/04_solution_base.png" alt="Foundation base avatar" />
+                </div>
+            </div>
+        </div>
+
+        <nav class="sticky top-0 bg-black/90 border-y border-gray-800 flex justify-around px-4 z-[80]">
+            <button class="category-tab active px-3 py-4 text-[10px] font-bold uppercase text-blue-400 border-b-2 border-blue-500" data-category="HAIR" onclick="switchCategory('HAIR')">HAIR</button>
+            <button class="category-tab px-3 py-4 text-[10px] font-bold uppercase text-gray-600 border-b-2 border-transparent" data-category="TOP" onclick="switchCategory('TOP')">TOP</button>
+            <button class="category-tab px-3 py-4 text-[10px] font-bold uppercase text-gray-600 border-b-2 border-transparent" data-category="BOTTOM" onclick="switchCategory('BOTTOM')">BOTTOM</button>
+            <button class="category-tab px-3 py-4 text-[10px] font-bold uppercase text-gray-600 border-b-2 border-transparent" data-category="SHOES" onclick="switchCategory('SHOES')">SHOES</button>
+        </nav>
+
+        <div class="p-8 pb-48">
+            <h3 class="text-sm font-bold italic mb-6">Trending <span id="current-category">HAIR</span></h3>
+            <div class="flex gap-6 overflow-x-auto no-scrollbar" id="trending-feed"></div>
+        </div>
+
+        <div class="fixed bottom-0 inset-x-0 p-8 bg-gradient-to-t from-black to-transparent z-[90]">
+            <button onclick="switchScreen('screen-checkout')" class="w-full py-6 bg-yellow-500 text-black rounded-full font-bold uppercase">
+                👜 PURCHASE THE LOOK
+            </button>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [SCREEN 5: CHECKOUT]
+         이미지 부품: 06_thelook_bridge.png
+         역할: 쇼핑몰 전환 배경
+         시점: 'THE LOOK' 버튼을 눌러 결제하러 갈 때
+         ════════════════════════════════════════════════════════════════ -->
+    <div id="screen-checkout" class="screen fixed inset-0 z-[110] flex flex-col items-center justify-center p-12 overflow-hidden">
+        <!-- [06_thelook_bridge.png] 쇼핑몰 전환 배경 -->
+        <div class="absolute inset-0 image-container">
+            <img src="./assets/06_thelook_bridge.png" alt="The LOOK bridge" class="opacity-70" />
+        </div>
+        <div class="absolute inset-0 bg-black/70"></div>
+        
+        <button onclick="switchScreen('screen-solution')" class="absolute top-8 left-8 z-10 text-2xl">✕</button>
+        
+        <div class="relative z-10 text-center space-y-8">
+            <p class="text-[10px] text-gray-500 uppercase">REDIRECTING TO</p>
+            <h2 class="text-7xl font-serif italic text-yellow-500 font-bold">THE LOOK.</h2>
+            <p class="text-[10px] text-gray-600 uppercase">SYNCING TO BOUTIQUE</p>
+            <div class="w-56 h-0.5 bg-gray-900 rounded-full overflow-hidden mx-auto">
+                <div class="h-full bg-yellow-500 progress-bar-full"></div>
+            </div>
+            <button onclick="switchScreen('screen-home')" class="text-[10px] text-gray-400 underline">Return to StyleSync</button>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * 🎯 StyleSync 최적화 앱
+         * 
+         * [이미지 경로 매칭]
+         * 01_hair_hero.png     → Screen 1 (Home) - 메인 헤어 카드
+         * 02_profile_base.png  → Screen 2 (Profile) - 배경
+         * 03_face_scan.png     → Screen 3 (Scan) - 얼굴 인식 영상
+         * 04_solution_base.png → Screen 4 (Solution) - 기본 아바타
+         * 05_final_look.png    → Screen 4 (Solution) - 최종 완성 아바타
+         * 06_thelook_bridge.png → Screen 5 (Checkout) - 배경
+         */
+
+        const TRENDING_DATA = {
+            HAIR: ['Silk Smooth', 'Natural Perm', 'Classic Cut'],
+            TOP: ['Premium Knit', 'Silk Shirt', 'Wool Jacket'],
+            BOTTOM: ['Wide Slacks', 'Raw Denim', 'Cargo Pants'],
+            SHOES: ['Derby Shoes', 'Classic Sneaker', 'Chelsea Boots']
+        };
+
+        let currentCategory = 'HAIR';
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function switchCategory(category) {
+            currentCategory = category;
+            
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                if (tab.dataset.category === category) {
+                    tab.classList.remove('text-gray-600', 'border-transparent');
+                    tab.classList.add('text-blue-400', 'border-blue-500');
+                } else {
+                    tab.classList.remove('text-blue-400', 'border-blue-500');
+                    tab.classList.add('text-gray-600', 'border-transparent');
+                }
+            });
+
+            document.getElementById('current-category').textContent = category;
+            renderTrendingFeed();
+        }
+
+        function renderTrendingFeed() {
+            const feed = document.getElementById('trending-feed');
+            feed.innerHTML = '';
+            TRENDING_DATA[currentCategory].forEach((name, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'min-w-[160px] aspect-[4/5] bg-gray-900 rounded-[2rem] border border-gray-800 p-4 flex flex-col justify-between';
+                btn.innerHTML = `<div class="bg-gray-800 rounded-2xl flex-1"></div><div><p class="text-[8px] text-gray-600">${idx + 1}</p><p class="text-xs">${name}</p></div>`;
+                btn.onclick = updateFinalLook;
+                feed.appendChild(btn);
+            });
+        }
+
+        function updateFinalLook() {
+            const img = document.querySelector('#final-look-image img');
+            img.style.opacity = '0';
+            img.style.filter = 'blur(15px)';
+            setTimeout(() => {
+                // [05_final_look.png]로 전환
+                img.src = './assets/05_final_look.png';
+                img.style.opacity = '1';
+                img.style.filter = 'blur(0px)';
+                img.style.transition = 'all 0.6s ease-out';
+            }, 300);
+        }
+
+        function startScan() {
+            setTimeout(() => {
+                switchScreen('screen-solution');
+                renderTrendingFeed();
+            }, 800);
+        }
+
+        document.getElementById('height-slider')?.addEventListener('input', e => {
+            document.getElementById('height-value').textContent = e.target.value;
+        });
+
+        document.getElementById('weight-slider')?.addEventListener('input', e => {
+            document.getElementById('weight-value').textContent = e.target.value;
+        });
+
+        renderTrendingFeed();
+    </script>
+</body>
+</html>

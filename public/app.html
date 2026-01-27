@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleSync</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white">
+
+<!-- HOME -->
+<div id="s1" class="screen min-h-screen p-8 flex flex-col">
+    <h1 class="text-4xl font-bold mb-12">StyleSync</h1>
+    <div class="flex-1 flex items-center justify-center">
+        <div class="w-full max-w-sm aspect-square rounded-3xl overflow-hidden bg-gray-900">
+            <img src="assets/01_hair_hero.jpg" class="w-full h-full object-cover" alt="Hair"/>
+        </div>
+    </div>
+    <button onclick="screen(2)" class="w-full py-4 bg-blue-600 rounded-full font-bold text-lg">START</button>
+</div>
+
+<!-- PROFILE -->
+<div id="s2" class="screen min-h-screen p-8 hidden flex-col">
+    <button onclick="screen(1)" class="text-3xl mb-8">←</button>
+    <h2 class="text-3xl font-bold mb-12">Your Measurements</h2>
+    <div class="flex-1 space-y-8">
+        <div>
+            <div class="flex justify-between text-lg font-bold mb-2">
+                <span>HEIGHT</span>
+                <span><span id="hv">175</span>cm</span>
+            </div>
+            <input type="range" min="140" max="210" value="175" onchange="document.getElementById('hv').innerText=this.value" class="w-full h-2 bg-gray-700 rounded cursor-pointer"/>
+        </div>
+        <div>
+            <div class="flex justify-between text-lg font-bold mb-2">
+                <span>WEIGHT</span>
+                <span><span id="wv">68</span>kg</span>
+            </div>
+            <input type="range" min="40" max="130" value="68" onchange="document.getElementById('wv').innerText=this.value" class="w-full h-2 bg-gray-700 rounded cursor-pointer"/>
+        </div>
+    </div>
+    <button onclick="screen(3)" class="w-full py-4 bg-blue-600 rounded-full font-bold text-lg">CONTINUE</button>
+</div>
+
+<!-- SCAN -->
+<div id="s3" class="screen min-h-screen flex flex-col items-center justify-center p-8 hidden">
+    <button onclick="screen(1)" class="absolute top-8 right-8 text-3xl">✕</button>
+    <h2 class="mb-12 text-2xl font-bold">SCANNING...</h2>
+    <div class="w-64 h-64 rounded-full overflow-hidden border-2 border-blue-500 mb-12">
+        <img src="assets/03_face_scan.jpg" class="w-full h-full object-cover" alt="Scan"/>
+    </div>
+    <button onclick="screen(4)" class="py-3 px-8 bg-blue-600 rounded-full font-bold">NEXT</button>
+</div>
+
+<!-- SOLUTION -->
+<div id="s4" class="screen min-h-screen p-8 flex flex-col hidden">
+    <button onclick="screen(3)" class="text-3xl mb-8">←</button>
+    <h2 class="text-3xl font-bold mb-6">YOUR STYLE</h2>
+    <div class="flex-1 rounded-2xl overflow-hidden mb-8">
+        <img id="avatar" src="assets/04_solution_base.jpg" class="w-full h-full object-cover" alt="Avatar"/>
+    </div>
+    <div class="flex gap-2 mb-6">
+        <button onclick="change()" class="px-4 py-2 bg-blue-600 rounded-full">HAIR</button>
+        <button onclick="change()" class="px-4 py-2 bg-gray-700 rounded-full">TOP</button>
+        <button onclick="change()" class="px-4 py-2 bg-gray-700 rounded-full">BOTTOM</button>
+        <button onclick="change()" class="px-4 py-2 bg-gray-700 rounded-full">SHOES</button>
+    </div>
+    <button onclick="screen(5)" class="w-full py-4 bg-yellow-500 text-black rounded-full font-bold">BUY</button>
+</div>
+
+<!-- CHECKOUT -->
+<div id="s5" class="screen fixed inset-0 hidden flex-col items-center justify-center p-8 z-50">
+    <div class="absolute inset-0 opacity-30">
+        <img src="assets/06_thelook_bridge.jpg" class="w-full h-full object-cover" alt="Bridge"/>
+    </div>
+    <div class="absolute inset-0 bg-black/60"></div>
+    <button onclick="screen(1)" class="absolute top-8 right-8 text-3xl z-10">✕</button>
+    <div class="relative z-10 text-center">
+        <p class="text-sm text-gray-400 mb-4">REDIRECTING TO</p>
+        <h1 class="text-7xl font-bold text-yellow-500 mb-4">THE LOOK</h1>
+        <p class="text-sm text-gray-400">PREMIUM BOUTIQUE</p>
+    </div>
+</div>
+
+<script>
+let screens = document.querySelectorAll('.screen');
+function screen(n) {
+    screens.forEach(s => s.classList.add('hidden'));
+    document.getElementById('s'+n).classList.remove('hidden');
+}
+function change() {
+    let img = document.getElementById('avatar');
+    img.style.opacity = '0';
+    setTimeout(() => {
+        img.src = 'assets/05_final_look.jpg';
+        img.style.opacity = '1';
+        img.style.transition = 'opacity 0.6s';
+    }, 200);
+}
+</script>
+
+<style>
+.hidden { display: none !important; }
+img { display: block; }
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    background: #374151;
+    border-radius: 5px;
+    outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+</style>
+
+</body>
+</html>

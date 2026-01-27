@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleSync</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; color: #fff; font-family: system-ui, sans-serif; }
+        .screen { display: none; min-height: 100vh; padding: 32px; }
+        .screen.active { display: flex; }
+        .screen { flex-direction: column; }
+        img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        h1 { font-size: 48px; margin-bottom: 48px; }
+        h2 { font-size: 36px; margin-bottom: 48px; }
+        button { padding: 16px 32px; background: #2563eb; color: white; border: none; border-radius: 50px; font-weight: bold; font-size: 18px; cursor: pointer; width: 100%; }
+        button.back { width: auto; margin-bottom: 32px; }
+        .flex-1 { flex: 1; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .justify-center { justify-content: center; }
+        .items-center { align-items: center; }
+        .gap-2 { gap: 8px; }
+        .mb-8 { margin-bottom: 32px; }
+        .rounded-3xl { border-radius: 24px; }
+        .rounded-full { border-radius: 9999px; }
+        .overflow-hidden { overflow: hidden; }
+        .bg-gray-900 { background: #111; }
+        .bg-yellow { background: #eab308; color: #000; }
+        .w-full { width: 100%; }
+        .max-w-sm { max-width: 24rem; }
+        .aspect-square { aspect-ratio: 1 / 1; }
+        .space-y-8 > * + * { margin-top: 32px; }
+        input[type="range"] { width: 100%; height: 8px; background: #374151; border-radius: 5px; -webkit-appearance: none; appearance: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; cursor: pointer; }
+        input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; cursor: pointer; border: none; }
+        .flex-label { display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; margin-bottom: 8px; }
+        .text-gray-400 { color: #9ca3af; }
+        .text-sm { font-size: 14px; }
+        .absolute { position: absolute; }
+        .top-8 { top: 32px; }
+        .right-8 { right: 32px; }
+        .text-3xl { font-size: 30px; }
+        .w-64 { width: 256px; }
+        .h-64 { height: 256px; }
+        .border-2 { border: 2px solid; }
+        .border-blue { border-color: #3b82f6; }
+        .relative { position: relative; }
+        .inset-0 { inset: 0; }
+        .fixed { position: fixed; }
+        .z-50 { z-index: 50; }
+        .opacity-30 { opacity: 0.3; }
+        .opacity-60 { opacity: 0.6; }
+        .bg-black-60 { background: rgba(0,0,0,0.6); }
+    </style>
+</head>
+<body>
+
+<!-- SCREEN 1: HOME -->
+<div id="s1" class="screen active flex-col">
+    <h1>StyleSync</h1>
+    <div class="flex-1 flex flex-col justify-center items-center">
+        <div class="w-full max-w-sm aspect-square rounded-3xl overflow-hidden bg-gray-900">
+            <img src="/assets/01_hair_hero.jpg" alt="Hair Hero"/>
+        </div>
+    </div>
+    <button onclick="gotoScreen(2)">START STYLING</button>
+</div>
+
+<!-- SCREEN 2: PROFILE -->
+<div id="s2" class="screen flex-col">
+    <button class="back" onclick="gotoScreen(1)">← Back</button>
+    <h2>Your Measurements</h2>
+    <div class="flex-1 space-y-8">
+        <div>
+            <div class="flex-label">
+                <span>HEIGHT</span>
+                <span><span id="hv">175</span>cm</span>
+            </div>
+            <input type="range" min="140" max="210" value="175" onchange="document.getElementById('hv').innerText=this.value"/>
+        </div>
+        <div>
+            <div class="flex-label">
+                <span>WEIGHT</span>
+                <span><span id="wv">68</span>kg</span>
+            </div>
+            <input type="range" min="40" max="130" value="68" onchange="document.getElementById('wv').innerText=this.value"/>
+        </div>
+    </div>
+    <button onclick="gotoScreen(3)">CONTINUE →</button>
+</div>
+
+<!-- SCREEN 3: SCAN -->
+<div id="s3" class="screen flex-col justify-center items-center relative">
+    <button class="absolute top-8 right-8 text-3xl" style="width:auto;padding:0" onclick="gotoScreen(1)">✕</button>
+    <h2>SCANNING FACE...</h2>
+    <div class="w-64 h-64 rounded-full overflow-hidden border-2 border-blue mb-8">
+        <img src="/assets/03_face_scan.jpg" alt="Face Scan"/>
+    </div>
+    <button onclick="gotoScreen(4)">NEXT →</button>
+</div>
+
+<!-- SCREEN 4: SOLUTION -->
+<div id="s4" class="screen flex-col">
+    <button class="back" onclick="gotoScreen(3)">← Back</button>
+    <h2>Your Style</h2>
+    <div class="flex-1 rounded-3xl overflow-hidden mb-8">
+        <img id="avatar" src="/assets/04_solution_base.jpg" alt="Avatar"/>
+    </div>
+    <div class="flex gap-2 mb-8">
+        <button onclick="changeStyle()" style="background:#2563eb">HAIR</button>
+        <button onclick="changeStyle()" style="background:#4b5563">TOP</button>
+        <button onclick="changeStyle()" style="background:#4b5563">BOTTOM</button>
+        <button onclick="changeStyle()" style="background:#4b5563">SHOES</button>
+    </div>
+    <button onclick="gotoScreen(5)" class="bg-yellow">BUY NOW</button>
+</div>
+
+<!-- SCREEN 5: CHECKOUT -->
+<div id="s5" class="screen fixed inset-0 flex-col justify-center items-center z-50">
+    <div style="position:absolute;inset:0;opacity:0.3">
+        <img src="/assets/06_thelook_bridge.jpg" alt="Bridge" style="width:100%;height:100%;object-fit:cover"/>
+    </div>
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6)"></div>
+    <button class="absolute top-8 right-8 text-3xl" style="width:auto;padding:0;background:none;color:white;position:relative;z-index:10" onclick="gotoScreen(1)">✕</button>
+    <div style="position:relative;z-index:10;text-align:center">
+        <p class="text-sm text-gray-400">REDIRECTING TO</p>
+        <h1 style="color:#eab308;margin:16px 0">THE LOOK</h1>
+        <p class="text-sm text-gray-400">PREMIUM BOUTIQUE</p>
+    </div>
+</div>
+
+<script>
+function gotoScreen(n) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('s'+n).classList.add('active');
+}
+
+function changeStyle() {
+    let img = document.getElementById('avatar');
+    img.style.opacity = '0';
+    setTimeout(() => {
+        img.src = '/assets/05_final_look.jpg';
+        img.style.opacity = '1';
+        img.style.transition = 'opacity 0.6s';
+    }, 200);
+}
+</script>
+
+</body>
+</html>

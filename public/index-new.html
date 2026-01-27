@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleSync - THE LOOK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    </style>
+</head>
+<body class="bg-black text-white">
+
+    <!-- SCREEN 1: HOME -->
+    <div id="screen-home" class="screen active min-h-screen flex flex-col">
+        <header class="p-6 bg-black/90 border-b border-gray-800">
+            <h1 class="text-2xl font-bold">StyleSync.</h1>
+            <p class="text-xs text-gray-500">Winter Edition</p>
+        </header>
+        
+        <div class="flex-1 p-8 flex flex-col justify-center">
+            <h2 class="text-3xl font-bold mb-6">Recommended Hair</h2>
+            <div class="rounded-3xl overflow-hidden bg-gray-900 w-full max-w-sm h-96">
+                <img src="./assets/01_hair_hero.jpg" alt="Hair Hero" />
+            </div>
+        </div>
+
+        <div class="p-8 pb-12">
+            <button onclick="goScreen('screen-profile')" class="w-full py-4 bg-blue-600 text-white rounded-full font-bold uppercase">
+                START →
+            </button>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: PROFILE -->
+    <div id="screen-profile" class="screen min-h-screen flex flex-col p-8">
+        <button onclick="goScreen('screen-home')" class="text-2xl mb-6">←</button>
+        <h2 class="text-3xl font-bold mb-8">Your Measurements</h2>
+        
+        <div class="flex-1 space-y-12">
+            <div>
+                <div class="flex justify-between mb-2">
+                    <label class="text-sm font-bold">HEIGHT</label>
+                    <span class="text-2xl font-bold"><span id="h-val">175</span>cm</span>
+                </div>
+                <input type="range" min="140" max="210" value="175" id="height" class="w-full">
+            </div>
+            
+            <div>
+                <div class="flex justify-between mb-2">
+                    <label class="text-sm font-bold">WEIGHT</label>
+                    <span class="text-2xl font-bold"><span id="w-val">68</span>kg</span>
+                </div>
+                <input type="range" min="40" max="130" value="68" id="weight" class="w-full">
+            </div>
+        </div>
+
+        <button onclick="goScreen('screen-scan')" class="w-full py-4 bg-blue-600 text-white rounded-full font-bold">
+            CONTINUE →
+        </button>
+    </div>
+
+    <!-- SCREEN 3: SCAN -->
+    <div id="screen-scan" class="screen fixed inset-0 bg-black z-50 flex flex-col items-center justify-center p-8">
+        <button onclick="goScreen('screen-home')" class="absolute top-6 right-6 text-2xl">✕</button>
+        
+        <h2 class="mb-12 text-xl font-bold">SCANNING FACE...</h2>
+        
+        <div class="w-56 h-56 rounded-full overflow-hidden border-2 border-blue-500 mb-12">
+            <img src="./assets/03_face_scan.jpg" alt="Face Scan" />
+        </div>
+
+        <div class="w-48 h-1 bg-gray-800 rounded mb-12">
+            <div class="h-full bg-blue-500 w-3/4"></div>
+        </div>
+
+        <button onclick="goScreen('screen-solution')" class="py-3 px-8 bg-blue-600 text-white rounded-full font-bold">
+            NEXT →
+        </button>
+    </div>
+
+    <!-- SCREEN 4: SOLUTION -->
+    <div id="screen-solution" class="screen min-h-screen flex flex-col p-8">
+        <button onclick="goScreen('screen-scan')" class="text-2xl mb-6">←</button>
+        <h2 class="text-3xl font-bold mb-6">YOUR STYLE</h2>
+        
+        <div class="flex-1 mb-8 rounded-2xl overflow-hidden bg-gray-900">
+            <img id="avatar" src="./assets/04_solution_base.jpg" alt="Avatar" />
+        </div>
+
+        <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+            <button onclick="changeStyle()" class="px-4 py-2 bg-blue-600 text-white rounded-full text-sm whitespace-nowrap">HAIR</button>
+            <button onclick="changeStyle()" class="px-4 py-2 bg-gray-700 text-white rounded-full text-sm whitespace-nowrap">TOP</button>
+            <button onclick="changeStyle()" class="px-4 py-2 bg-gray-700 text-white rounded-full text-sm whitespace-nowrap">BOTTOM</button>
+            <button onclick="changeStyle()" class="px-4 py-2 bg-gray-700 text-white rounded-full text-sm whitespace-nowrap">SHOES</button>
+        </div>
+
+        <button onclick="goScreen('screen-checkout')" class="w-full py-4 bg-yellow-500 text-black rounded-full font-bold">
+            BUY →
+        </button>
+    </div>
+
+    <!-- SCREEN 5: CHECKOUT -->
+    <div id="screen-checkout" class="screen fixed inset-0 z-50 flex flex-col items-center justify-center p-8">
+        <button onclick="goScreen('screen-solution')" class="absolute top-6 right-6 text-2xl">✕</button>
+        
+        <div class="absolute inset-0 z-0 opacity-50">
+            <img src="./assets/06_thelook_bridge.jpg" alt="Bridge" class="w-full h-full object-cover" />
+        </div>
+
+        <div class="absolute inset-0 bg-black/60 z-0"></div>
+
+        <div class="relative z-10 text-center space-y-6">
+            <p class="text-sm text-gray-400">REDIRECTING TO</p>
+            <h1 class="text-6xl font-bold text-yellow-500">THE LOOK</h1>
+            <p class="text-sm text-gray-400">PREMIUM BOUTIQUE</p>
+            
+            <button onclick="goScreen('screen-home')" class="mt-8 text-sm text-gray-400 underline">
+                RETURN HOME
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 화면 전환
+        function goScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // 슬라이더 업데이트
+        document.getElementById('height')?.addEventListener('input', e => {
+            document.getElementById('h-val').textContent = e.target.value;
+        });
+        
+        document.getElementById('weight')?.addEventListener('input', e => {
+            document.getElementById('w-val').textContent = e.target.value;
+        });
+
+        // 스타일 변경
+        function changeStyle() {
+            const img = document.getElementById('avatar');
+            img.style.opacity = '0';
+            setTimeout(() => {
+                img.src = './assets/05_final_look.jpg';
+                img.style.opacity = '1';
+                img.style.transition = 'opacity 0.6s';
+            }, 300);
+        }
+    </script>
+</body>
+</html>

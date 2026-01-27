@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Stylist - AI 스타일링 앱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        .hidden { display: none; }
+        .block { display: block; }
+    </style>
+</head>
+<body class="bg-[#FDFDFD] text-[#1A1A1A] font-sans overflow-x-hidden">
+
+    <!-- 1. 홈화면 -->
+    <div id="home" class="fade-in">
+        <header class="p-8 border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-40">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">Winter '95 10:20 AM</p>
+            <h1 class="text-3xl font-bold italic tracking-tight">Seoul, 5℃ Sunny</h1>
+        </header>
+        
+        <div class="p-8 space-y-16 pb-32">
+            <section>
+                <div class="flex justify-between items-end mb-6">
+                    <h2 class="text-xl font-bold italic">Recommended Hair</h2>
+                    <span class="text-[10px] font-bold text-gray-300 uppercase">View All</span>
+                </div>
+                <div class="aspect-[4/5] bg-gray-50 rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm">
+                    <div class="w-full h-full flex items-center justify-center text-gray-300 italic text-sm">Realistic Hair Image</div>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <h2 class="text-xl font-bold italic">Style Feed</h2>
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="h-80 bg-gray-50 rounded-[2.5rem] border border-gray-100" />
+                    <div class="h-80 bg-gray-50 rounded-[2.5rem] border border-gray-100" />
+                </div>
+            </section>
+        </div>
+
+        <div class="fixed bottom-0 inset-x-0 p-8 bg-gradient-to-t from-white via-white to-transparent">
+            <button onclick="showScreen('setup')" class="w-full py-6 bg-black text-white rounded-full font-bold shadow-2xl active:scale-95 transition-all hover:bg-gray-800">
+                START PERSONAL STYLING
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. 셋업 화면 -->
+    <div id="setup" class="hidden fade-in p-8 space-y-12 flex flex-col min-h-screen">
+        <div class="space-y-2">
+            <h2 class="text-3xl font-bold italic leading-tight">Your Profile &<br/>Face Scan</h2>
+            <p class="text-sm text-gray-400">스캔 정보를 통해 당신의 얼굴형과 피부톤에 맞춘 스타일을 추천해드립니다.</p>
+        </div>
+
+        <div class="space-y-8 flex-1">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-6 bg-gray-50 rounded-3xl border border-gray-100">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase">Height</span>
+                    <p class="text-xl font-bold mt-1">178<span class="text-xs ml-1">cm</span></p>
+                </div>
+                <div class="p-6 bg-gray-50 rounded-3xl border border-gray-100">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase">Weight</span>
+                    <p class="text-xl font-bold mt-1">72<span class="text-xs ml-1">kg</span></p>
+                </div>
+            </div>
+            <div class="aspect-square bg-gray-100 rounded-[3rem] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center text-2xl">📱</div>
+                <p class="text-xs font-bold text-gray-400 uppercase">Tap to Scan Face</p>
+            </div>
+        </div>
+
+        <button onclick="showScreen('loading')" class="w-full py-6 bg-black text-white rounded-full font-bold shadow-xl hover:bg-gray-800">
+            ANALYZE MY STYLE
+        </button>
+    </div>
+
+    <!-- 3. 로딩 화면 -->
+    <div id="loading" class="hidden fade-in min-h-screen flex flex-col items-center justify-center space-y-6">
+        <div class="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin" />
+        <p class="text-sm font-bold tracking-widest animate-pulse italic">SCANNING SUCCESSFUL...</p>
+    </div>
+
+    <!-- 4. 결과 화면 -->
+    <div id="board" class="hidden fade-in pb-10">
+        <header class="p-8 space-y-6 text-center">
+            <div class="inline-block p-1 px-4 bg-green-50 text-green-600 rounded-full text-[10px] font-bold uppercase tracking-widest mb-2">Scan Successful</div>
+            <div class="relative inline-block">
+                <div class="text-6xl font-bold italic tracking-tighter" id="score">0</div>
+                <div class="text-[10px] font-bold text-gray-400 uppercase mt-1">Match Score</div>
+            </div>
+        </header>
+
+        <nav class="sticky top-0 bg-white/90 backdrop-blur-xl border-b border-gray-100 flex justify-around px-4 z-50">
+            <button onclick="setTab('hair')" class="tab-btn active px-4 py-6 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2 border-black text-black" data-tab="hair">Hair</button>
+            <button onclick="setTab('upper')" class="tab-btn px-4 py-6 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2 border-transparent text-gray-300" data-tab="upper">Upper</button>
+            <button onclick="setTab('lower')" class="tab-btn px-4 py-6 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2 border-transparent text-gray-300" data-tab="lower">Lower</button>
+            <button onclick="setTab('shoes')" class="tab-btn px-4 py-6 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2 border-transparent text-gray-300" data-tab="shoes">Shoes</button>
+        </nav>
+
+        <div class="p-8">
+            <h3 class="text-2xl font-bold italic capitalize leading-none mb-6"><span id="tab-name">Hair</span> Suggestions</h3>
+            <div class="grid grid-cols-1 gap-6">
+                <div class="bg-gray-50 aspect-square rounded-[3rem] p-8 border border-gray-100 flex flex-col justify-between group hover:border-black transition-all">
+                    <div class="flex justify-between items-start">
+                        <span class="text-[10px] font-bold text-gray-400">Option 01</span>
+                        <button class="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-shadow" aria-label="Like this style">❤️</button>
+                    </div>
+                    <button class="w-full py-4 bg-white border border-gray-200 rounded-2xl font-bold text-xs uppercase tracking-widest group-hover:bg-black group-hover:text-white transition-all">
+                        Select Item
+                    </button>
+                </div>
+                <div class="bg-gray-50 aspect-square rounded-[3rem] p-8 border border-gray-100 flex flex-col justify-between group hover:border-black transition-all">
+                    <div class="flex justify-between items-start">
+                        <span class="text-[10px] font-bold text-gray-400">Option 02</span>
+                        <button class="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-shadow" aria-label="Like this style">❤️</button>
+                    </div>
+                    <button class="w-full py-4 bg-white border border-gray-200 rounded-2xl font-bold text-xs uppercase tracking-widest group-hover:bg-black group-hover:text-white transition-all">
+                        Select Item
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screen) {
+            document.getElementById('home').classList.add('hidden');
+            document.getElementById('setup').classList.add('hidden');
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('board').classList.add('hidden');
+
+            document.getElementById(screen).classList.remove('hidden');
+
+            if (screen === 'loading') {
+                setTimeout(() => {
+                    showScreen('board');
+                    animateScore();
+                }, 2000);
+            }
+        }
+
+        function animateScore() {
+            let currentScore = 0;
+            const scoreEl = document.getElementById('score');
+            const interval = setInterval(() => {
+                currentScore += 1;
+                scoreEl.textContent = currentScore;
+                if (currentScore >= 92) clearInterval(interval);
+            }, 20);
+        }
+
+        function setTab(tab) {
+            // 버튼 활성화 상태 변경
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.dataset.tab === tab) {
+                    btn.classList.add('border-black', 'text-black');
+                    btn.classList.remove('border-transparent', 'text-gray-300');
+                } else {
+                    btn.classList.remove('border-black', 'text-black');
+                    btn.classList.add('border-transparent', 'text-gray-300');
+                }
+            });
+            
+            // 탭 이름 변경
+            const tabNames = {
+                'hair': 'Hair',
+                'upper': 'Upper',
+                'lower': 'Lower',
+                'shoes': 'Shoes'
+            };
+            document.getElementById('tab-name').textContent = tabNames[tab];
+        }
+    </script>
+</body>
+</html>
