@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleSync - AI Personal Stylist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@latest/dist/framer-motion.umd.js"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-20px); }
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes slideDown {
+            from { top: 0; }
+            to { top: 100%; }
+        }
+        @keyframes progress {
+            from { width: 0; }
+            to { width: 74%; }
+        }
+        @keyframes progressFull {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .fade-out { animation: fadeOut 0.5s ease-out forwards; }
+        .animate-spin { animation: spin 1s linear infinite; }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .scan-line { animation: slideDown 2s linear infinite; }
+        .progress-bar { animation: progress 2s ease-in-out forwards; }
+        .progress-bar-full { animation: progressFull 3s ease-in-out forwards; }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .hidden { display: none !important; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:active { transform: scale(0.98); }
+        input[type="range"] { -webkit-appearance: none; appearance: none; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 16px; height: 16px;
+            border-radius: 50%; background: black;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px; height: 16px;
+            border-radius: 50%; background: black;
+            cursor: pointer; border: none;
+        }
+    </style>
+</head>
+<body class="bg-[#FDFDFD] text-[#1A1A1A] font-sans overflow-x-hidden">
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [Screen 1: 메인 홈 화면]
+         ════════════════════════════════════════════════════════════════ -->
+    <div id="screen-home" class="screen active">
+        <header class="sticky top-0 z-50 p-6 bg-white/80 backdrop-blur-md border-b border-gray-100 flex justify-between items-center">
+            <div class="space-y-1">
+                <h1 class="text-2xl font-serif italic font-bold tracking-tighter">StyleSync.</h1>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none italic">Winter • 10:20 AM • Sunny 5°C</p>
+            </div>
+            <button aria-label="Language settings" class="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center hover:bg-gray-100 transition-colors">🌐</button>
+        </header>
+        
+        <main class="p-8 space-y-12 pb-40">
+            <section class="space-y-4">
+                <h2 class="text-xl font-bold italic tracking-tight px-2">Recommended Hair</h2>
+                <div class="relative aspect-[4/5] bg-gray-50 rounded-[3.5rem] border border-gray-100 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] cursor-pointer overflow-hidden group hover:shadow-lg transition-all" role="button" tabindex="0">
+                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" alt="Winter Soft Layers Hair Style" />
+                    <div class="absolute bottom-10 left-10 text-white z-20">
+                        <h3 class="text-3xl font-bold italic leading-none">Winter Soft Layers</h3>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex justify-between items-center px-2">
+                    <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Scroll for more</h4>
+                </div>
+                <div class="h-40 bg-gray-50 rounded-[2.5rem] border border-gray-100 p-8 flex flex-col justify-end shadow-inner">
+                    <p class="font-bold italic">Top & Bottom Syncing...</p>
+                </div>
+            </section>
+        </main>
+
+        <div class="fixed bottom-0 inset-x-0 p-8 bg-gradient-to-t from-white to-transparent z-[100]">
+            <button onclick="switchScreen('screen-profile')" class="w-full py-7 bg-black text-white rounded-full font-bold text-xs tracking-[0.4em] uppercase shadow-[0_12px_0_0_#333] hover:bg-gray-900 transition-all" aria-label="Start personal styling process">
+                START STYLING
+            </button>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [Screen 2: 프로필 입력 (신체 데이터)]
+         ════════════════════════════════════════════════════════════════ -->
+    <div id="screen-profile" class="screen">
+        <div class="p-10 space-y-12 min-h-screen flex flex-col pb-40">
+            <header class="pt-6 space-y-2">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Step 01</p>
+                <h2 class="text-4xl font-bold italic leading-none">Your Stats</h2>
+            </header>
+            
+            <div class="space-y-14 flex-1 py-10">
+                <!-- 키 슬라이더 -->
+                <div class="space-y-6">
+                    <div class="flex justify-between font-bold text-[10px] uppercase tracking-widest text-gray-400 px-2">
+                        <span>height</span>
+                        <span class="text-black font-mono"><span id="height-value">178</span> cm</span>
+                    </div>
+                    <input type="range" min="140" max="210" value="178" id="height-slider" class="w-full h-1 bg-gray-100 rounded-full accent-black cursor-pointer" aria-label="Height slider">
+                </div>
+
+                <!-- 몸무게 슬라이더 -->
+                <div class="space-y-6">
+                    <div class="flex justify-between font-bold text-[10px] uppercase tracking-widest text-gray-400 px-2">
+                        <span>weight</span>
+                        <span class="text-black font-mono"><span id="weight-value">72</span> kg</span>
+                    </div>
+                    <input type="range" min="40" max="130" value="72" id="weight-slider" class="w-full h-1 bg-gray-100 rounded-full accent-black cursor-pointer" aria-label="Weight slider">
+                </div>
+            </div>
+
+            <button onclick="switchScreen('screen-scan')" class="w-full py-6 bg-black text-white rounded-full font-bold text-xs tracking-[0.3em] uppercase shadow-[0_8px_0_0_#333] hover:bg-gray-900 transition-all mb-10" aria-label="Proceed to face scan">
+                PROCEED TO SCAN
+            </button>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [Screen 3: AI 페이스 스캔 HUD]
+         ════════════════════════════════════════════════════════════════ -->
+    <div id="screen-scan" class="screen fixed inset-0 bg-black z-[110] p-10 flex flex-col justify-between overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800')] bg-cover opacity-50 grayscale" />
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+        
+        <div class="relative z-10 space-y-4">
+            <div class="flex justify-between items-center">
+                <p class="text-[10px] text-blue-500 font-bold tracking-[0.4em] uppercase">Sys_Auth: Active</p>
+                <button onclick="switchScreen('screen-home')" class="text-white text-xl hover:text-gray-300 transition-colors" aria-label="Close face scan modal">✕</button>
+            </div>
+            <h3 class="text-xl font-bold text-white tracking-tight uppercase italic">Analyzing Facial Map...</h3>
+            <div class="h-0.5 w-full bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-blue-500 shadow-[0_0_15px_#3b82f6] progress-bar" />
+            </div>
+        </div>
+
+        <div class="relative z-10 flex-1 flex items-center justify-center">
+            <div class="w-64 h-80 border border-blue-500/30 rounded-full relative overflow-hidden flex items-center justify-center">
+                <div class="absolute inset-0 border-2 border-dashed border-blue-400 opacity-20 animate-pulse" />
+                <div class="absolute w-full h-1 bg-gradient-to-r from-transparent via-blue-400 to-transparent shadow-[0_0_25px_#3b82f6] scan-line" />
+                <div class="text-blue-500 font-mono text-[8px] opacity-40">XY_COORD_SYNC_ENABLED</div>
+            </div>
+        </div>
+
+        <button onclick="startScan()" class="relative z-10 py-7 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-[0_0_40px_rgba(59,130,246,0.6)] border border-blue-400 hover:bg-blue-700 transition-colors">
+            Start Auto-Scan
+        </button>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [Screen 4: 최종 솔루션 & 라이브 드레스업]
+         ════════════════════════════════════════════════════════════════ -->
+    <div id="screen-solution" class="screen pb-44 bg-white">
+        <header class="p-8 space-y-6 text-center">
+            <div class="inline-block px-4 py-1 bg-green-50 text-green-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-green-100 animate-bounce">✓ SCAN SUCCESSFUL</div>
+            <h2 class="text-5xl font-serif italic font-bold tracking-tighter leading-none pt-2">Final Solution.</h2>
+        </header>
+
+        <!-- 라이브 드레스업 이미지 -->
+        <div class="px-8 mb-10">
+            <div id="final-look-image" class="aspect-[3/4] bg-gray-50 rounded-[3.5rem] border border-gray-100 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] flex items-center justify-center overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=800" class="w-full h-full object-cover" alt="Final coordinated look" />
+            </div>
+        </div>
+
+        <!-- 카테고리 탭 네비게이션 -->
+        <nav class="sticky top-0 bg-white/90 backdrop-blur-xl border-y border-gray-100 flex justify-around px-4 z-[80]">
+            <button class="category-tab active px-4 py-6 text-[10px] font-black tracking-[0.2em] uppercase transition-all text-black border-b-2 border-black" data-category="HAIR" onclick="switchCategory('HAIR')" aria-label="Filter HAIR items" aria-selected="true" role="tab">HAIR</button>
+            <button class="category-tab px-4 py-6 text-[10px] font-black tracking-[0.2em] uppercase transition-all text-gray-300 border-b-2 border-transparent" data-category="TOP" onclick="switchCategory('TOP')" aria-label="Filter TOP items" aria-selected="false" role="tab">TOP</button>
+            <button class="category-tab px-4 py-6 text-[10px] font-black tracking-[0.2em] uppercase transition-all text-gray-300 border-b-2 border-transparent" data-category="BOTTOM" onclick="switchCategory('BOTTOM')" aria-label="Filter BOTTOM items" aria-selected="false" role="tab">BOTTOM</button>
+            <button class="category-tab px-4 py-6 text-[10px] font-black tracking-[0.2em] uppercase transition-all text-gray-300 border-b-2 border-transparent" data-category="SHOES" onclick="switchCategory('SHOES')" aria-label="Filter SHOES items" aria-selected="false" role="tab">SHOES</button>
+        </nav>
+
+        <!-- Trending Textures 피드 -->
+        <div class="p-8 space-y-8 pb-40">
+            <div class="flex justify-between items-baseline px-2">
+                <h3 class="text-sm font-black italic tracking-tighter uppercase">Trending <span id="current-category">HAIR</span></h3>
+                <span class="text-[9px] font-bold text-gray-300 uppercase tracking-widest">Type 01 - 03</span>
+            </div>
+            <div class="flex gap-6 overflow-x-auto no-scrollbar pb-10" id="trending-feed">
+                <!-- 동적으로 생성됨 -->
+            </div>
+        </div>
+
+        <!-- 최종 구매 CTA 버튼 -->
+        <div class="fixed bottom-0 inset-x-0 p-8 bg-gradient-to-t from-white via-white/80 to-transparent z-[90]">
+            <button onclick="switchScreen('screen-checkout')" class="w-full py-9 bg-black text-white rounded-[3rem] shadow-[0_15px_0_0_#333] hover:bg-gray-900 transition-all flex flex-col items-center justify-center gap-1 border border-gray-800" aria-label="Proceed to checkout with selected items">
+                <span class="text-[10px] font-bold tracking-[0.4em] opacity-40 uppercase mb-1">Synchronized Purchase</span>
+                <span class="text-3xl font-serif italic font-bold tracking-tighter uppercase">THE LOOK.</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         [Screen 5: 최종 결제]
+         ════════════════════════════════════════════════════════════════ -->
+    <div id="screen-checkout" class="screen min-h-screen bg-black flex flex-col items-center justify-center text-center p-12 space-y-10">
+        <h2 class="text-6xl font-serif italic text-white font-bold tracking-tighter">
+            THE LOOK.
+        </h2>
+        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.6em] animate-pulse">Establishing Secure Sync...</p>
+        <div class="w-56 h-0.5 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full bg-white shadow-[0_0_15px_white] progress-bar-full" />
+        </div>
+        <button onclick="switchScreen('screen-home')" class="mt-20 text-[10px] text-gray-600 font-bold uppercase tracking-[0.3em] underline hover:text-gray-400 transition-colors" aria-label="Return to home screen">
+            Return to StyleSync
+        </button>
+    </div>
+
+    <script>
+        // 🎯 데이터 정의
+        const TRENDING_DATA = {
+            HAIR: ['Silk Smooth', 'Natural Perm', 'Classic Cut'],
+            TOP: ['Premium Knit', 'Silk Shirt', 'Wool Jacket'],
+            BOTTOM: ['Wide Slacks', 'Raw Denim', 'Cargo Pants'],
+            SHOES: ['Derby Shoes', 'Classic Sneaker', 'Chelsea Boots']
+        };
+
+        let currentCategory = 'HAIR';
+
+        // 📱 화면 전환 함수
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // 🎨 카테고리 변경
+        function switchCategory(category) {
+            currentCategory = category;
+            
+            // 탭 활성화 상태 업데이트
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                if (tab.dataset.category === category) {
+                    tab.classList.remove('text-gray-300', 'border-transparent');
+                    tab.classList.add('text-black', 'border-black');
+                    tab.setAttribute('aria-selected', 'true');
+                } else {
+                    tab.classList.remove('text-black', 'border-black');
+                    tab.classList.add('text-gray-300', 'border-transparent');
+                    tab.setAttribute('aria-selected', 'false');
+                }
+            });
+
+            document.getElementById('current-category').textContent = category;
+            renderTrendingFeed();
+        }
+
+        // 🛍️ 트렌딩 피드 렌더링
+        function renderTrendingFeed() {
+            const feed = document.getElementById('trending-feed');
+            feed.innerHTML = '';
+            
+            TRENDING_DATA[currentCategory].forEach((name, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'min-w-[180px] aspect-[4/5] bg-white rounded-[2.5rem] border-2 border-gray-100 shadow-[0_10px_0_0_#eeeeee] p-6 flex flex-col justify-between hover:border-gray-300 transition-all text-left group active:shadow-none active:translate-y-[10px]';
+                btn.innerHTML = `
+                    <div class="w-full h-24 bg-gray-50 rounded-3xl mb-4 shadow-inner group-hover:bg-gray-100 transition-colors" />
+                    <div class="space-y-1">
+                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Texture ${idx + 1}</p>
+                        <h4 class="font-bold text-xs uppercase leading-tight">${name}</h4>
+                    </div>
+                `;
+                btn.onclick = () => updateFinalLook();
+                feed.appendChild(btn);
+            });
+        }
+
+        // 🎭 최종 룩 이미지 업데이트
+        function updateFinalLook() {
+            const image = document.getElementById('final-look-image').querySelector('img');
+            image.style.opacity = '0';
+            image.style.filter = 'blur(15px)';
+            
+            setTimeout(() => {
+                image.style.opacity = '1';
+                image.style.filter = 'blur(0px)';
+                image.style.transition = 'all 0.6s ease-out';
+            }, 100);
+        }
+
+        // 🔍 스캔 시작 함수
+        function startScan() {
+            setTimeout(() => {
+                switchScreen('screen-solution');
+                renderTrendingFeed();
+            }, 500);
+        }
+
+        // 🎚️ 슬라이더 이벤트
+        document.getElementById('height-slider').addEventListener('input', (e) => {
+            document.getElementById('height-value').textContent = e.target.value;
+        });
+
+        document.getElementById('weight-slider').addEventListener('input', (e) => {
+            document.getElementById('weight-value').textContent = e.target.value;
+        });
+
+        // 초기 렌더링
+        renderTrendingFeed();
+    </script>
+</body>
+</html>
